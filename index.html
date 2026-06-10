@@ -126,12 +126,12 @@
         <table class="group-table">
             <thead>
                 <tr>
-                    <th data-sort="group" id="th-group" data-i18n="col_group">Group <span class="sort-ind"></span></th>
-                    <th data-sort="sector" id="th-sector" data-i18n="col_sector">Cluster <span class="sort-ind"></span></th>
-                    <th data-sort="change1d" id="th-change1d" class="numeric" data-i18n="col_1d">1D % <span class="sort-ind"></span></th>
-                    <th data-sort="change1w" id="th-change1w" class="numeric" data-i18n="col_1w">1W % <span class="sort-ind"></span></th>
-                    <th data-sort="change1m" id="th-change1m" class="numeric" data-i18n="col_1m">1M % <span class="sort-ind"></span></th>
-                    <th data-sort="tickers" id="th-tickers" data-i18n="col_tickers">Tickers <span class="sort-ind"></span></th>
+                    <th data-sort="group" id="th-group">Group <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
+                    <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
+                    <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
+                    <th data-sort="change1m" id="th-change1m" class="numeric">1M % <span class="sort-ind"></span></th>
+                    <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
                 </tr>
             </thead>
             <tbody id="stockTableBody"></tbody>
@@ -269,7 +269,7 @@ function renderStockTable() {
         const th = document.getElementById('th-' + k);
         if (!th) return;
         const ind = th.querySelector('.sort-ind');
-        ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
+        if (ind) ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
     });
 
     if (!rows.length) {
