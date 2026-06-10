@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>港股板塊 Interactive Chart</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f23; color: #eee; padding: 16px; }
+        .header { text-align: center; padding: 12px 0 8px; }
+        .header h1 { font-size: 20px; color: #fff; margin-bottom: 2px; }
+        .header .date { color: #777; font-size: 12px; }
+        .controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 8px 0 12px; }
+        .period-btn { padding: 4px 14px; border-radius: 14px; border: 1px solid #444; background: #1a1a3e; color: #aaa; font-size: 12px; cursor: pointer; }
+        .period-btn.active { background: #6c5ce7; color: #fff; border-color: #6c5ce7; }
+        select, input[type="text"] { background: #1a1a3e; color: #ddd; border: 1px solid #444; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+        input[type="text"]::placeholder { color: #666; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; padding: 0 4px; }
+        .plot-card { background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s; }
+        .plot-card.dimmed { opacity: 0.25; }
+        .plot-card.highlighted { border-color: #FFD700; box-shadow: 0 0 0 2px #FFD700, 0 0 24px rgba(255,215,0,0.25); }
+        .plot-card .title { padding: 8px 12px 2px; font-size: 13px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; }
+        .plot-card .title .range { font-weight: 400; font-size: 11px; color: #777; }
+        .plot-card .color-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 2px 12px 6px; font-size: 10px; color: #aaa; }
+        .color-legend .item { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: background 0.1s; }
+        .color-legend .item:hover { background: #2a2a4e; }
+        .color-legend .item.muted { opacity: 0.25; }
+        .color-legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .plot-card .plot { width: 100%; height: 260px; }
+        .summary { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+        .summary-item { background: #1a1a3e; border-radius: 8px; padding: 8px 14px; border: 1px solid #2a2a4e; text-align: center; min-width: 120px; }
+        .summary-item .label { font-size: 10px; color: #888; }
+        .summary-item .val { font-size: 15px; font-weight: 700; margin-top: 2px; }
+        .up { color: #00d4aa; }
+        .down { color: #ff6b6b; }
+        .section { margin: 20px 0; background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; padding: 16px; }
+        .section-label { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .table-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .table-controls label { font-size: 11px; color: #888; }
+        .table-controls select, .table-controls input { font-size: 12px; }
+        .table-meta { font-size: 11px; color: #888; font-weight: 400; }
+        .group-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .group-table th { background: #1a1a3e; color: #888; padding: 6px 8px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; user-select: none; cursor: pointer; white-space: nowrap; }
+        .group-table th:hover { color: #fff; }
+        .group-table th .sort-ind { color: #6c5ce7; margin-left: 4px; font-size: 9px; }
+        .group-table th.numeric { text-align: right; }
+        .group-table td { padding: 3px 6px; border-bottom: 1px solid #2a2a3e; color: #ccc; font-size: 11px; }
+        .group-table td.numeric { text-align: right; color: #aaa; font-variant-numeric: tabular-nums; }
+        .group-table td.cluster { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #999; }
+        .group-table td.tickers { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #00d4aa; font-family: monospace; font-size: 10px; }
+        .group-table tr { transition: background 0.1s; cursor: pointer; }
+        .group-table tr:hover td { background: #1a1a3e; }
+        .group-table tr.active td { background: #2a2a5e; color: #FFD700; }
+        .group-table tr.active td.tickers, .group-table tr.active td.change { color: #FFD700; }
+        .group-table .tickers { color: #00d4aa; font-family: monospace; font-size: 10px; }
+        .group-table .change { font-variant-numeric: tabular-nums; }
+        .group-table .change.up { color: #00d4aa; }
+        .group-table .change.down { color: #ff6b6b; }
+        .group-table .change.flat { color: #777; }
+.group-table .indicator { font-size: 14px; font-weight: bold; }
+.group-table .indicator.positive { color: #00d4aa; }
+.group-table .indicator.negative { color: #ff6b6b; }
+.group-table .indicator.neutral { color: #777; }
+        .group-table tr.hidden { display: none; }
+        .empty-row td { text-align: center; color: #888; padding: 24px; }
+        .reset-btn { background: transparent; border: 1px solid #444; color: #aaa; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+        .reset-btn:hover { border-color: #6c5ce7; color: #fff; }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .plot-card .plot { height: 200px; }
+            .header h1 { font-size: 16px; }
+            .table-controls { width: 100%; }
+            .table-controls select, .table-controls input { flex: 1; min-width: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🇭🇰 港股板塊 Trend</h1>
+    <div class="date" id="updateDate"></div>
+    <div style="margin-top:6px;font-size:11px;">
+        <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;">📊 美股 Dashboard →</a>
+    </div>
+</div>
+
+<div class="summary" id="indicesContainer" style="margin:8px 0 4px;"></div>
+
+<div class="controls">
+    <button class="period-btn active" data-days="60">3M</button>
+    <button class="period-btn" data-days="125">6M</button>
+    <button class="period-btn" data-days="250">1Y</button>
+    <select id="viewMode">
+        <option value="cumulative">Cumulative (Base 100)</option>
+        <option value="daily">Daily Return %</option>
+    </select>
+</div>
+
+<div class="summary" id="summaryContainer"></div>
+
+<div class="grid" id="chartGrid"></div>
+
+<div class="section" id="stockSection">
+    <div class="section-label">
+        <span>📋 Stock Composition by Industrial Group</span>
+        <span class="table-meta" id="tableMeta"></span>
+        <span style="font-size:10px;color:#555;margin-left:8px;">88 stocks · 3 indices</span>
+    </div>
+    <div class="table-controls">
+        <label for="sectorFilter">Sector:</label>
+        <select id="sectorFilter">
+            <option value="">All Sectors</option>
+        </select>
+        <label for="tickerSearch">Ticker:</label>
+        <input type="text" id="tickerSearch" placeholder="e.g. NVDA" />
+        <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+    <div style="overflow-x:auto; margin-top: 12px;">
+        <table class="group-table">
+            <thead>
+                <tr>
+                    <th data-sort="group" id="th-group">Group <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
+                    <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
+                    <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
+                    <th data-sort="change1m" id="th-change1m" class="numeric">1M % <span class="sort-ind"></span></th>
+                    <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
+                </tr>
+            </thead>
+            <tbody id="stockTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const COLORS = ['#00FF88','#FFD700','#FF6B9D','#00D4FF','#FF9500','#FF3333','#33FF57','#FF33F1','#3399FF','#FF6600','#CC33FF','#FFDD00','#00FFCC','#FF4466'];
+const SECTOR_ORDER = ['Information Technology','Communication Services','Consumer Discretionary','Consumer Staples','Health Care','Financials','Energy','Industrials','Materials','Utilities','Real Estate'];
+
+let allData = null;
+let currentDays = 60;
+let currentView = 'cumulative';
+
+// Interactive state
+let sortKey = 'group';
+let sortAsc = true;
+let sectorFilter = '';
+let tickerFilter = '';
+let activeGroup = null;  // Currently highlighted group (clicked row)
+
+async function loadData() {
+    try {
+        const r = await fetch('data.json');
+        return await r.json();
+    } catch(e) { return null; }
+}
+
+function groupDailyReturns(dates, groupRets, days, view) {
+    const sliced = {};
+    const d = dates.slice(-days);
+    for (const [name, rets] of Object.entries(groupRets)) {
+        const vals = rets.slice(-days);
+        if (view === 'cumulative') {
+            let cum = 100;
+            sliced[name] = vals.map(r => { cum *= (1 + r/100); return Math.round(cum*100)/100; });
+        } else {
+            sliced[name] = vals.map(r => Math.round(r*100)/100);
+        }
+    }
+    return { dates: d, groups: sliced };
+}
+
+function getLastVal(groups, name) {
+    const v = groups[name];
+    return v ? v[v.length-1] : null;
+}
+
+// ====== Interactive table ======
+
+function buildGroupRows() {
+    const stocks = allData.stocks || {};
+    const sectors = allData.sectors || {};
+    const tickerLookup = allData.ticker_lookup || {};
+    return Object.keys(stocks).map(grp => {
+        const { change1d, change1w, change1m } = computeChanges(grp);
+        return {
+            group: grp,
+            sector: sectors[grp] || '',
+            count: (stocks[grp] || []).length,
+            change1d, change1w, change1m,
+            tickers: stocks[grp] || [],
+            tickerLookup
+        };
+    });
+}
+
+// Compute 1D and 1W percentage change using full-period daily returns
+// (1D = last 1 trading day, 1W = last 5 trading days) — independent of period selector
+function computeChanges(grp) {
+    const rets = (allData.groups || {})[grp];
+    if (!rets || rets.length < 2) return { change1d: null, change1w: null, change1m: null };
+    // Build cumulative series from daily returns (base 100)
+    const cum = [];
+    let v = 100;
+    for (const r of rets) { v *= (1 + r / 100); cum.push(v); }
+    const last = cum[cum.length - 1];
+    const d1  = cum.length >= 2 ? cum[cum.length - 2] : last;
+    const d5  = cum.length >= 6 ? cum[cum.length - 6] : cum[0];
+    const d21 = cum.length >= 22 ? cum[cum.length - 22] : cum[0];  // ~1 month
+    return {
+        change1d: (last - d1) / d1 * 100,
+        change1w: (last - d5) / d5 * 100,
+        change1m: (last - d21) / d21 * 100
+    };
+}
+
+function applyFilters(rows) {
+    const tf = tickerFilter.trim().toUpperCase();
+    const tickerLookup = allData.ticker_lookup || {};
+    return rows.filter(r => {
+        if (sectorFilter && r.sector !== sectorFilter) return false;
+        if (tf) {
+            // First check if ticker is in this group's tickers list
+            const inGroup = r.tickers.some(t => t.toUpperCase().includes(tf));
+            // Fallback: check if ticker_lookup maps to THIS group
+            const directGroup = tickerLookup[tf];
+            if (!inGroup && directGroup !== r.group) return false;
+        }
+        return true;
+    });
+}
+
+function applySort(rows) {
+    const dir = sortAsc ? 1 : -1;
+    const sorted = [...rows];
+    sorted.sort((a, b) => {
+        let av, bv;
+        switch (sortKey) {
+            case 'group':    av = a.group.toLowerCase();  bv = b.group.toLowerCase();  break;
+            case 'sector':   av = a.sector.toLowerCase(); bv = b.sector.toLowerCase(); break;
+            case 'change1d': av = a.change1d ?? -Infinity; bv = b.change1d ?? -Infinity; break;
+            case 'change1w': av = a.change1w ?? -Infinity; bv = b.change1w ?? -Infinity; break;
+            case 'change1m': av = a.change1m ?? -Infinity; bv = b.change1m ?? -Infinity; break;
+            case 'tickers':  av = a.tickers.join(',');    bv = b.tickers.join(',');    break;
+            default: return 0;
+        }
+        if (av < bv) return -1 * dir;
+        if (av > bv) return  1 * dir;
+        return 0;
+    });
+    return sorted;
+}
+
+function renderStockTable() {
+    const tb = document.getElementById('stockTableBody');
+    tb.innerHTML = '';
+    const rows = applySort(applyFilters(buildGroupRows()));
+    const meta = document.getElementById('tableMeta');
+    meta.textContent = `Showing ${rows.length} / ${Object.keys(allData.stocks || {}).length} groups`;
+
+    // Sort indicators
+    ['group','sector','change1d','change1w','change1m','tickers'].forEach(k => {
+        const th = document.getElementById('th-' + k);
+        if (!th) return;
+        const ind = th.querySelector('.sort-ind');
+        ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
+    });
+
+    if (!rows.length) {
+        const tr = document.createElement('tr');
+        tr.className = 'empty-row';
+        tr.innerHTML = '<td colspan="6">No groups match the current filters.</td>';
+        tb.appendChild(tr);
+        return;
+    }
+
+    const fmtPct = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+    const clsPct = v => v == null ? 'flat' : (v > 0.005 ? 'up' : v < -0.005 ? 'down' : 'flat');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    for (const r of rows) {
+        const tr = document.createElement('tr');
+        tr.dataset.group = r.group;
+        if (r.group === activeGroup) tr.classList.add('active');
+        tr.innerHTML = `
+            <td>${esc(r.group)}</td>
+            <td class="cluster" title="${esc(r.sector)}">${esc(r.sector)}</td>
+            <td class="numeric change ${clsPct(r.change1d)}">${fmtPct(r.change1d)}</td>
+            <td class="numeric change ${clsPct(r.change1w)}">${fmtPct(r.change1w)}</td>
+            <td class="numeric change ${clsPct(r.change1m)}">${fmtPct(r.change1m)}</td>
+            <td class="tickers">${esc(r.tickers.join(', '))}</td>
+        `;
+        tr.onclick = () => setActiveGroup(r.group);
+        tb.appendChild(tr);
+    }
+}
+
+function populateSectorFilter() {
+    const sel = document.getElementById('sectorFilter');
+    // Keep first "All Sectors" option
+    sel.innerHTML = '<option value="">All Sectors</option>';
+    const sectorsInData = Array.from(new Set(Object.values(allData.sectors || {})));
+    const ordered = SECTOR_ORDER.filter(s => sectorsInData.includes(s));
+    for (const s of ordered) {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sel.appendChild(opt);
+    }
+    sel.value = sectorFilter;
+}
+
+function setActiveGroup(groupName) {
+    if (activeGroup === groupName) {
+        // Click same row again → clear highlight
+        activeGroup = null;
+    } else {
+        activeGroup = groupName;
+    }
+    updateChartHighlights();
+    renderStockTable();
+}
+
+function updateChartHighlights() {
+    // Highlight the card whose sector contains activeGroup; dim other cards.
+    // Also dim the inactive group traces within the highlighted card.
+    const sectors = allData.sectors || {};
+    const activeSector = activeGroup ? sectors[activeGroup] : null;
+    document.querySelectorAll('.plot-card').forEach(card => {
+        const cardSector = card.dataset.sector;
+        if (!activeGroup) {
+            card.classList.remove('highlighted', 'dimmed');
+        } else if (cardSector === activeSector) {
+            card.classList.add('highlighted');
+            card.classList.remove('dimmed');
+        } else {
+            card.classList.add('dimmed');
+            card.classList.remove('highlighted');
+        }
+    });
+    // Dim legend items not matching activeGroup
+    document.querySelectorAll('.color-legend .item').forEach(item => {
+        const g = item.dataset.group;
+        if (!activeGroup) item.classList.remove('muted');
+        else if (g === activeGroup) item.classList.remove('muted');
+        else item.classList.add('muted');
+    });
+}
+
+function resetAll() {
+    sortKey = 'group';
+    sortAsc = true;
+    sectorFilter = '';
+    tickerFilter = '';
+    activeGroup = null;
+    document.getElementById('sectorFilter').value = '';
+    document.getElementById('tickerSearch').value = '';
+    updateChartHighlights();
+    renderStockTable();
+}
+
+function render() {
+    if (!allData) return;
+    const { dates, groups: grpRets } = allData;
+    const { dates: slicedDates, groups: slicedGroups } = groupDailyReturns(dates, grpRets, currentDays, currentView);
+    const sectors = allData.sectors || {};
+
+    // Summary
+    let best = { n: '', v: -Infinity }, worst = { n: '', v: Infinity };
+    for (const [n, v] of Object.entries(slicedGroups)) {
+        const last = v[v.length-1];
+        if (last > best.v) best = { n, v: last };
+        if (last < worst.v) worst = { n, v: last };
+    }
+    const allVals = Object.values(slicedGroups).map(v => v[v.length-1]);
+    const avg = allVals.reduce((a,b)=>a+b,0) / allVals.length;
+    document.getElementById('summaryContainer').innerHTML = `
+        <div class="summary-item"><div class="label">🏆 Best</div><div class="val up">${best.n}</div><div class="label">${currentView === 'cumulative' ? best.v.toFixed(1) : '+' + best.v.toFixed(2) + '%'}</div></div>
+        <div class="summary-item"><div class="label">📉 Worst</div><div class="val down">${worst.n}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
+        <div class="summary-item"><div class="label">📊 Avg Group</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} groups</div></div>
+    `;
+    document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} | ${slicedDates.length} trading days`;
+
+    // HK indices summary (HSI / HSCE / HSTECH) — 1D/1W/1M
+    const indices = allData.indices || {};
+    const idxCum = {};  // ticker -> cumulative value series
+    for (const [ticker, info] of Object.entries(indices)) {
+        const rets = info.returns.slice(-currentDays);
+        let cum = 100;
+        idxCum[ticker] = rets.map(r => { cum *= (1 + r/100); return Math.round(cum*100)/100; });
+    }
+    // Compute 1D / 1W / 1M change per index (independent of period selector, from full series)
+    const fmtPct = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+    const clsPct = v => v == null ? 'flat' : (v > 0.005 ? 'up' : v < -0.005 ? 'down' : 'flat');
+    const indicesHtml = Object.entries(indices).map(([ticker, info]) => {
+        const rets = info.returns;
+        if (!rets || rets.length < 2) return '';
+        // Build cum from full series
+        let cum = 100;
+        const cumSeries = rets.map(r => { cum *= (1 + r/100); return cum; });
+        const last = cumSeries[cumSeries.length-1];
+        const d1  = cumSeries.length >= 2 ? cumSeries[cumSeries.length-2] : last;
+        const d5  = cumSeries.length >= 6 ? cumSeries[cumSeries.length-6] : cumSeries[0];
+        const d21 = cumSeries.length >= 22 ? cumSeries[cumSeries.length-22] : cumSeries[0];
+        const c1 = (last - d1) / d1 * 100;
+        const c5 = (last - d5) / d5 * 100;
+        const cM = (last - d21) / d21 * 100;
+        const lastVal = idxCum[ticker] ? idxCum[ticker][idxCum[ticker].length-1] : null;
+        return `
+            <div class="summary-item" style="min-width:140px;border-left:3px solid #6c5ce7;">
+                <div class="label">📈 ${info.name}</div>
+                <div class="val" style="color:#fff;font-size:13px;">${lastVal != null ? lastVal.toFixed(1) : '—'}</div>
+                <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;font-size:10px;">
+                    <span class="${clsPct(c1)}">${fmtPct(c1)}</span>
+                    <span style="color:#555;">1D</span>
+                    <span class="${clsPct(c5)}">${fmtPct(c5)}</span>
+                    <span style="color:#555;">1W</span>
+                    <span class="${clsPct(cM)}">${fmtPct(cM)}</span>
+                    <span style="color:#555;">1M</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+    const idxContainer = document.getElementById('indicesContainer');
+    if (idxContainer) idxContainer.innerHTML = indicesHtml;
+
+    // Subplots by sector
+    const grid = document.getElementById('chartGrid');
+    grid.innerHTML = '';
+
+    for (const sector of SECTOR_ORDER) {
+        const groupsInSector = Object.entries(sectors).filter(([,s]) => s === sector).map(([g]) => g);
+        const validGroups = groupsInSector.filter(g => slicedGroups[g]);
+        if (!validGroups.length) continue;
+
+        const card = document.createElement('div');
+        card.className = 'plot-card';
+        card.dataset.sector = sector;
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'title';
+        const lastVals = validGroups.map(g => `${g} ${getLastVal(slicedGroups, g).toFixed(1)}`).join(' | ');
+        titleDiv.innerHTML = `<span>${sector}</span><span class="range">${lastVals}</span>`;
+        card.appendChild(titleDiv);
+
+        // Color legend strip (also clickable → highlight group)
+        const legendDiv = document.createElement('div');
+        legendDiv.className = 'color-legend';
+        validGroups.forEach((g, i) => {
+            const item = document.createElement('span');
+            item.className = 'item';
+            item.dataset.group = g;
+            item.innerHTML = '<span class="dot" style="background:' + COLORS[i % COLORS.length] + '"></span>' + g;
+            item.onclick = (e) => { e.stopPropagation(); setActiveGroup(g); };
+            legendDiv.appendChild(item);
+        });
+        card.appendChild(legendDiv);
+
+        const plotDiv = document.createElement('div');
+        plotDiv.className = 'plot';
+        plotDiv.id = `p-${sector.replace(/[^a-z]/gi,'')}`;
+        card.appendChild(plotDiv);
+        grid.appendChild(card);
+
+        const traces = validGroups.map((g, i) => ({
+            x: slicedDates, y: slicedGroups[g], type: 'scatter', mode: 'lines', name: g,
+            line: { color: COLORS[i % COLORS.length], width: 2.5 },
+            hovertemplate: `<b>${g}</b><br>%{x|%m/%d}<br>${currentView==='cumulative'?'%{y:.1f}':'%{y:.2f}%'}<extra></extra>`
+        }));
+        const layout = {
+            paper_bgcolor: '#151530', plot_bgcolor: '#151530',
+            margin: { l: 30, r: 8, t: 4, b: 24 }, showlegend: false,
+            xaxis: { gridcolor: '#2a2a3e', tickfont: {color:'#666',size:8}, zeroline: false },
+            yaxis: { gridcolor: '#2a2a3e', tickfont: {color:'#666',size:8}, zeroline: currentView==='daily', zerolinecolor: '#444' },
+            hovermode: 'closest', dragmode: false,
+            hoverlabel: { bgcolor: '#1a1a3e', font: {color: '#fff', size: 11}, bordercolor: '#2a2a4e' },
+        };
+        Plotly.newPlot(plotDiv.id, traces, layout, { responsive: true, displayModeBar: false });
+        
+        // Click to highlight point
+        const selectedPoints = {};
+        plotDiv.on('plotly_click', data => {
+            const pt = data.points[0];
+            const plotId = plotDiv.id;
+            // Remove previous highlight
+            if (selectedPoints[plotId]) {
+                Plotly.addTraces(plotId, { x: [selectedPoints[plotId].x], y: [selectedPoints[plotId].y], type: 'scatter', mode: 'markers', marker: { size: 14, color: '#fff', symbol: 'circle', opacity: 0 }, name: '_hl' }, 0);
+                Plotly.deleteTraces(plotId, 1);
+            }
+            // Add new highlight
+            selectedPoints[plotId] = { x: pt.x, y: pt.y };
+            Plotly.addTraces(plotId, { x: [pt.x], y: [pt.y], type: 'scatter', mode: 'markers', marker: { size: 14, color: '#FFD700', symbol: 'circle', line: { width: 2, color: '#000' } }, name: '_hl' }, 0);
+        });
+    }
+
+    // Re-apply highlight state (cards were just re-rendered)
+    updateChartHighlights();
+
+    // Stock table
+    renderStockTable();
+}
+
+loadData().then(data => {
+    if (data) { allData = data; populateSectorFilter(); render(); }
+    else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data</div>';
+});
+
+// Navigation footer (港股 Dashboard 加 link 去美股)
+document.addEventListener('DOMContentLoaded', () => {
+    const footer = document.createElement('div');
+    footer.style.cssText = 'text-align:center;padding:20px 0 8px;margin-top:20px;border-top:1px solid #2a2a4e;font-size:11px;color:#666;';
+    footer.innerHTML = `
+        <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;">📊 美股 Dashboard</a>
+        <span style="color:#444;">·</span>
+        <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;">🇭🇰 港股 Dashboard (current)</a>
+    `;
+    document.body.appendChild(footer);
+});
+
+// Controls
+document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.onclick = () => {
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentDays = parseInt(btn.dataset.days);
+        render();
+    };
+});
+document.getElementById('viewMode').onchange = e => { currentView = e.target.value; render(); };
+
+// Sortable headers
+// Numeric change columns (1D, 1W) default to desc on first click so strongest performers appear first.
+const DESC_FIRST = new Set(['change1d', 'change1w']);
+document.querySelectorAll('.group-table th[data-sort]').forEach(th => {
+    th.onclick = () => {
+        const k = th.dataset.sort;
+        if (sortKey === k) {
+            sortAsc = !sortAsc;
+        } else {
+            sortKey = k;
+            sortAsc = !DESC_FIRST.has(k);
+        }
+        renderStockTable();
+    };
+});
+
+// Table filter controls
+document.getElementById('sectorFilter').onchange = e => { sectorFilter = e.target.value; renderStockTable(); };
+document.getElementById('tickerSearch').oninput = e => { tickerFilter = e.target.value; renderStockTable(); };
+document.getElementById('resetBtn').onclick = resetAll;
+</script>
+</body>
+</html>
