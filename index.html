@@ -379,7 +379,7 @@ function render() {
         <div class="summary-item"><div class="label">📉 Worst</div><div class="val down">${worst.n}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
         <div class="summary-item"><div class="label">📊 Avg Group</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} groups</div></div>
     `;
-    document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} | ${slicedDates.length} trading days`;
+    document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} · generated ${allData.generated_at}`;
 
     // HK indices summary (HSI / HSCE / HSTECH) — 1D/1W/1M
     const indices = allData.indices || {};
