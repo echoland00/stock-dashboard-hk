@@ -94,9 +94,9 @@
 <div class="summary" id="indicesContainer" style="margin:8px 0 4px;"></div>
 
 <div class="controls">
-    <button class="period-btn active" data-days="60">3M</button>
-    <button class="period-btn" data-days="125">6M</button>
-    <button class="period-btn" data-days="250">1Y</button>
+    <button class="period-btn active" data-days="60" data-i18n="period_3m">3月</button>
+    <button class="period-btn" data-days="125" data-i18n="period_6m">6月</button>
+    <button class="period-btn" data-days="250" data-i18n="period_1y">1年</button>
     <select id="viewMode">
         <option value="cumulative" data-i18n="view_cumulative">Cumulative (Base 100)</option>
         <option value="daily" data-i18n="view_daily">Daily Return %</option>
@@ -109,9 +109,9 @@
 
 <div class="section" id="stockSection">
     <div class="section-label">
-        <span data-i18n="table_title">📋 Stock Composition by Industrial Group</span>
+        <span data-i18n="table_title">📋 按板塊群組分類</span>
         <span class="table-meta" id="tableMeta"></span>
-        <span style="font-size:10px;color:#555;margin-left:8px;">86 stocks · 3 indices</span>
+        <span style="font-size:10px;color:#555;margin-left:8px;" id="stockCountMeta"></span>
     </div>
     <div class="table-controls">
         <label for="sectorFilter" data-i18n="filter_sector">Sector:</label>
@@ -126,12 +126,12 @@
         <table class="group-table">
             <thead>
                 <tr>
-                    <th data-sort="group" id="th-group">Group <span class="sort-ind"></span></th>
-                    <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
-                    <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
-                    <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
-                    <th data-sort="change1m" id="th-change1m" class="numeric">1M % <span class="sort-ind"></span></th>
-                    <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
+                    <th data-sort="group" id="th-group"><span data-i18n="col_group">群組</span> <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector"><span data-i18n="col_sector">類別</span> <span class="sort-ind"></span></th>
+                    <th data-sort="change1d" id="th-change1d" class="numeric"><span data-i18n="col_1d">1日%</span> <span class="sort-ind"></span></th>
+                    <th data-sort="change1w" id="th-change1w" class="numeric"><span data-i18n="col_1w">1週%</span> <span class="sort-ind"></span></th>
+                    <th data-sort="change1m" id="th-change1m" class="numeric"><span data-i18n="col_1m">1月%</span> <span class="sort-ind"></span></th>
+                    <th data-sort="tickers" id="th-tickers"><span data-i18n="col_tickers">股票</span> <span class="sort-ind"></span></th>
                 </tr>
             </thead>
             <tbody id="stockTableBody"></tbody>
@@ -262,7 +262,7 @@ function renderStockTable() {
     tb.innerHTML = '';
     const rows = applySort(applyFilters(buildGroupRows()));
     const meta = document.getElementById('tableMeta');
-    meta.textContent = `Showing ${rows.length} / ${Object.keys(allData.stocks || {}).length} groups`;
+    meta.textContent = `${EagleI18n.t('table_meta_prefix')} ${rows.length} / ${Object.keys(allData.stocks || {}).length} ${EagleI18n.t('table_meta_suffix')}`;
 
     // Sort indicators
     ['group','sector','change1d','change1w','change1m','tickers'].forEach(k => {
@@ -385,7 +385,12 @@ function render() {
         <div class="summary-item"><div class="label">${EagleI18n.t('label_worst')}</div><div class="val down">${EagleI18n.tGroup(worst.n)}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
         <div class="summary-item"><div class="label">${EagleI18n.t('label_avg')}</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} ${EagleI18n.t('groups_unit')}</div></div>
     `;
-    document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} · generated ${allData.generated_at}`;
+    document.getElementById('updateDate').textContent = `${EagleI18n.t('updated_prefix')}: ${slicedDates[slicedDates.length-1]} ${EagleI18n.t('updated_sep')} generated ${allData.generated_at}`;
+
+    // Stock count meta
+    const stockCount = Object.values(allData.stocks || {}).reduce((s, arr) => s + arr.length, 0);
+    const idxCount = Object.keys(allData.indices || {}).length;
+    document.getElementById('stockCountMeta').textContent = `${stockCount} ${EagleI18n.t('stocks_count')} · ${idxCount} ${EagleI18n.t('indices_count')}`;
 
     // HK indices summary (HSI / HSCE / HSTECH) — 1D/1W/1M
     const indices = allData.indices || {};
@@ -546,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     footer.innerHTML = `
         <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;" data-i18n="nav_us">📊 美股 Dashboard</a>
         <span style="color:#444;">·</span>
-        <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;" data-i18n="nav_hk_current">🇭🇰 港股 Dashboard (current)</a>
+        <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;" data-i18n="nav_hk_current">🇭🇰 港股 Dashboard (目前)</a>
     `;
     document.body.appendChild(footer);
 
@@ -556,6 +561,9 @@ document.addEventListener('DOMContentLoaded', () => {
     credit.setAttribute('data-i18n', 'powered_by');
     credit.textContent = 'Powered by Eagle (Nigel AI)';
     document.body.appendChild(credit);
+
+    // Re-apply i18n to freshly added footer elements
+    EagleI18n.apply();
 });
 
 // Controls
