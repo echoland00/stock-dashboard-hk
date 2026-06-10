@@ -514,6 +514,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;">🇭🇰 港股 Dashboard (current)</a>
     `;
     document.body.appendChild(footer);
+
+    // Credit line
+    const credit = document.createElement('div');
+    credit.style.cssText = 'text-align:center;padding:6px 0 16px;font-size:10px;color:#555;letter-spacing:0.5px;';
+    credit.textContent = 'Powered by Eagle (Nigel AI)';
+    document.body.appendChild(credit);
 });
 
 // Controls
