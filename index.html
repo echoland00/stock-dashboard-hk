@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>港股板塊 Interactive Chart</title>
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="i18n.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f23; color: #eee; padding: 16px; }
@@ -78,10 +79,15 @@
 <body>
 
 <div class="header">
-    <h1>🇭🇰 港股板塊 Trend</h1>
+    <h1 data-i18n="title">🇭🇰 港股板塊 Trend</h1>
     <div class="date" id="updateDate"></div>
-    <div style="margin-top:6px;font-size:11px;">
-        <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;">📊 美股 Dashboard →</a>
+    <div style="margin-top:6px;font-size:11px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+        <a id="usLink" href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;" data-i18n="subtitle_index">📊 美股 Dashboard →</a>
+        <span style="color:#444;">·</span>
+        <select id="langSelect" style="background:#1a1a3e;color:#ddd;border:1px solid #444;padding:2px 8px;border-radius:6px;font-size:11px;cursor:pointer;">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+        </select>
     </div>
 </div>
 
@@ -92,8 +98,8 @@
     <button class="period-btn" data-days="125">6M</button>
     <button class="period-btn" data-days="250">1Y</button>
     <select id="viewMode">
-        <option value="cumulative">Cumulative (Base 100)</option>
-        <option value="daily">Daily Return %</option>
+        <option value="cumulative" data-i18n="view_cumulative">Cumulative (Base 100)</option>
+        <option value="daily" data-i18n="view_daily">Daily Return %</option>
     </select>
 </div>
 
@@ -103,29 +109,29 @@
 
 <div class="section" id="stockSection">
     <div class="section-label">
-        <span>📋 Stock Composition by Industrial Group</span>
+        <span data-i18n="table_title">📋 Stock Composition by Industrial Group</span>
         <span class="table-meta" id="tableMeta"></span>
-        <span style="font-size:10px;color:#555;margin-left:8px;">88 stocks · 3 indices</span>
+        <span style="font-size:10px;color:#555;margin-left:8px;">86 stocks · 3 indices</span>
     </div>
     <div class="table-controls">
-        <label for="sectorFilter">Sector:</label>
+        <label for="sectorFilter" data-i18n="filter_sector">Sector:</label>
         <select id="sectorFilter">
-            <option value="">All Sectors</option>
+            <option value="" data-i18n="filter_all_sectors">All Sectors</option>
         </select>
-        <label for="tickerSearch">Ticker:</label>
-        <input type="text" id="tickerSearch" placeholder="e.g. NVDA" />
-        <button class="reset-btn" id="resetBtn">Reset</button>
+        <label for="tickerSearch" data-i18n="filter_ticker">Ticker:</label>
+        <input type="text" id="tickerSearch" data-i18n-placeholder="placeholder_ticker" placeholder="e.g. 0700.HK" />
+        <button class="reset-btn" id="resetBtn" data-i18n="btn_reset">Reset</button>
     </div>
     <div style="overflow-x:auto; margin-top: 12px;">
         <table class="group-table">
             <thead>
                 <tr>
-                    <th data-sort="group" id="th-group">Group <span class="sort-ind"></span></th>
-                    <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
-                    <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
-                    <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
-                    <th data-sort="change1m" id="th-change1m" class="numeric">1M % <span class="sort-ind"></span></th>
-                    <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
+                    <th data-sort="group" id="th-group" data-i18n="col_group">Group <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector" data-i18n="col_sector">Cluster <span class="sort-ind"></span></th>
+                    <th data-sort="change1d" id="th-change1d" class="numeric" data-i18n="col_1d">1D % <span class="sort-ind"></span></th>
+                    <th data-sort="change1w" id="th-change1w" class="numeric" data-i18n="col_1w">1W % <span class="sort-ind"></span></th>
+                    <th data-sort="change1m" id="th-change1m" class="numeric" data-i18n="col_1m">1M % <span class="sort-ind"></span></th>
+                    <th data-sort="tickers" id="th-tickers" data-i18n="col_tickers">Tickers <span class="sort-ind"></span></th>
                 </tr>
             </thead>
             <tbody id="stockTableBody"></tbody>
@@ -269,7 +275,7 @@ function renderStockTable() {
     if (!rows.length) {
         const tr = document.createElement('tr');
         tr.className = 'empty-row';
-        tr.innerHTML = '<td colspan="6">No groups match the current filters.</td>';
+        tr.innerHTML = `<td colspan="6">${EagleI18n.t('empty_msg')}</td>`;
         tb.appendChild(tr);
         return;
     }
@@ -283,8 +289,8 @@ function renderStockTable() {
         tr.dataset.group = r.group;
         if (r.group === activeGroup) tr.classList.add('active');
         tr.innerHTML = `
-            <td>${esc(r.group)}</td>
-            <td class="cluster" title="${esc(r.sector)}">${esc(r.sector)}</td>
+            <td>${esc(EagleI18n.tGroup(r.group))}</td>
+            <td class="cluster" title="${esc(EagleI18n.tSector(r.sector))}">${esc(EagleI18n.tSector(r.sector))}</td>
             <td class="numeric change ${clsPct(r.change1d)}">${fmtPct(r.change1d)}</td>
             <td class="numeric change ${clsPct(r.change1w)}">${fmtPct(r.change1w)}</td>
             <td class="numeric change ${clsPct(r.change1m)}">${fmtPct(r.change1m)}</td>
@@ -298,13 +304,13 @@ function renderStockTable() {
 function populateSectorFilter() {
     const sel = document.getElementById('sectorFilter');
     // Keep first "All Sectors" option
-    sel.innerHTML = '<option value="">All Sectors</option>';
+    sel.innerHTML = `<option value="" data-i18n="filter_all_sectors">${EagleI18n.t('filter_all_sectors')}</option>`;
     const sectorsInData = Array.from(new Set(Object.values(allData.sectors || {})));
     const ordered = SECTOR_ORDER.filter(s => sectorsInData.includes(s));
     for (const s of ordered) {
         const opt = document.createElement('option');
         opt.value = s;
-        opt.textContent = s;
+        opt.textContent = EagleI18n.tSector(s);
         sel.appendChild(opt);
     }
     sel.value = sectorFilter;
@@ -375,9 +381,9 @@ function render() {
     const allVals = Object.values(slicedGroups).map(v => v[v.length-1]);
     const avg = allVals.reduce((a,b)=>a+b,0) / allVals.length;
     document.getElementById('summaryContainer').innerHTML = `
-        <div class="summary-item"><div class="label">🏆 Best</div><div class="val up">${best.n}</div><div class="label">${currentView === 'cumulative' ? best.v.toFixed(1) : '+' + best.v.toFixed(2) + '%'}</div></div>
-        <div class="summary-item"><div class="label">📉 Worst</div><div class="val down">${worst.n}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
-        <div class="summary-item"><div class="label">📊 Avg Group</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} groups</div></div>
+        <div class="summary-item"><div class="label">${EagleI18n.t('label_best')}</div><div class="val up">${EagleI18n.tGroup(best.n)}</div><div class="label">${currentView === 'cumulative' ? best.v.toFixed(1) : '+' + best.v.toFixed(2) + '%'}</div></div>
+        <div class="summary-item"><div class="label">${EagleI18n.t('label_worst')}</div><div class="val down">${EagleI18n.tGroup(worst.n)}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
+        <div class="summary-item"><div class="label">${EagleI18n.t('label_avg')}</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} ${EagleI18n.t('groups_unit')}</div></div>
     `;
     document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} · generated ${allData.generated_at}`;
 
@@ -392,6 +398,8 @@ function render() {
     // Compute 1D / 1W / 1M change per index (independent of period selector, from full series)
     const fmtPct = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
     const clsPct = v => v == null ? 'flat' : (v > 0.005 ? 'up' : v < -0.005 ? 'down' : 'flat');
+    // Index ticker → i18n key map (since data.json stores English names, we re-translate)
+    const idxKey = {'^HSI': 'index_hsi', '^HSCE': 'index_hsce', '3032.HK': 'index_hstech'};
     const indicesHtml = Object.entries(indices).map(([ticker, info]) => {
         const rets = info.returns;
         if (!rets || rets.length < 2) return '';
@@ -406,17 +414,18 @@ function render() {
         const c5 = (last - d5) / d5 * 100;
         const cM = (last - d21) / d21 * 100;
         const lastVal = idxCum[ticker] ? idxCum[ticker][idxCum[ticker].length-1] : null;
+        const label = (idxKey[ticker] && EagleI18n.t(idxKey[ticker])) || info.name;
         return `
             <div class="summary-item" style="min-width:140px;border-left:3px solid #6c5ce7;">
-                <div class="label">📈 ${info.name}</div>
+                <div class="label">${label}</div>
                 <div class="val" style="color:#fff;font-size:13px;">${lastVal != null ? lastVal.toFixed(1) : '—'}</div>
                 <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;font-size:10px;">
                     <span class="${clsPct(c1)}">${fmtPct(c1)}</span>
-                    <span style="color:#555;">1D</span>
+                    <span style="color:#555;">${EagleI18n.t('period_1d')}</span>
                     <span class="${clsPct(c5)}">${fmtPct(c5)}</span>
-                    <span style="color:#555;">1W</span>
+                    <span style="color:#555;">${EagleI18n.t('period_1w')}</span>
                     <span class="${clsPct(cM)}">${fmtPct(cM)}</span>
-                    <span style="color:#555;">1M</span>
+                    <span style="color:#555;">${EagleI18n.t('period_1m')}</span>
                 </div>
             </div>
         `;
@@ -438,8 +447,8 @@ function render() {
         card.dataset.sector = sector;
         const titleDiv = document.createElement('div');
         titleDiv.className = 'title';
-        const lastVals = validGroups.map(g => `${g} ${getLastVal(slicedGroups, g).toFixed(1)}`).join(' | ');
-        titleDiv.innerHTML = `<span>${sector}</span><span class="range">${lastVals}</span>`;
+        const lastVals = validGroups.map(g => `${EagleI18n.tGroup(g)} ${getLastVal(slicedGroups, g).toFixed(1)}`).join(' | ');
+        titleDiv.innerHTML = `<span>${EagleI18n.tSector(sector)}</span><span class="range">${lastVals}</span>`;
         card.appendChild(titleDiv);
 
         // Color legend strip (also clickable → highlight group)
@@ -449,7 +458,7 @@ function render() {
             const item = document.createElement('span');
             item.className = 'item';
             item.dataset.group = g;
-            item.innerHTML = '<span class="dot" style="background:' + COLORS[i % COLORS.length] + '"></span>' + g;
+            item.innerHTML = '<span class="dot" style="background:' + COLORS[i % COLORS.length] + '"></span>' + EagleI18n.tGroup(g);
             item.onclick = (e) => { e.stopPropagation(); setActiveGroup(g); };
             legendDiv.appendChild(item);
         });
@@ -462,9 +471,9 @@ function render() {
         grid.appendChild(card);
 
         const traces = validGroups.map((g, i) => ({
-            x: slicedDates, y: slicedGroups[g], type: 'scatter', mode: 'lines', name: g,
+            x: slicedDates, y: slicedGroups[g], type: 'scatter', mode: 'lines', name: EagleI18n.tGroup(g),
             line: { color: COLORS[i % COLORS.length], width: 2.5 },
-            hovertemplate: `<b>${g}</b><br>%{x|%m/%d}<br>${currentView==='cumulative'?'%{y:.1f}':'%{y:.2f}%'}<extra></extra>`
+            hovertemplate: `<b>${EagleI18n.tGroup(g)}</b><br>%{x|%m/%d}<br>${currentView==='cumulative'?'%{y:.1f}':'%{y:.2f}%'}<extra></extra>`
         }));
         const layout = {
             paper_bgcolor: '#151530', plot_bgcolor: '#151530',
@@ -501,23 +510,50 @@ function render() {
 
 loadData().then(data => {
     if (data) { allData = data; populateSectorFilter(); render(); }
-    else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data</div>';
+    else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">' + EagleI18n.t('failed_load') + '</div>';
 });
+
+// ====== i18n: language selector + auto-detect + re-render on change ======
+(function() {
+    // Init: detect language, populate dropdown, apply translations
+    const lang = EagleI18n.detect('zh');  // HK default = zh
+    EagleI18n.set(lang);
+
+    // Sync dropdown UI
+    const sel = document.getElementById('langSelect');
+    if (sel) {
+        sel.value = EagleI18n.get();
+        sel.addEventListener('change', e => {
+            EagleI18n.set(e.target.value);
+        });
+    }
+
+    // Re-render dynamic content on language change
+    document.addEventListener('langChanged', () => {
+        if (typeof allData !== 'undefined' && allData) {
+            populateSectorFilter();
+            render();
+        }
+        // Re-apply static translations (footer/credit)
+        EagleI18n.apply();
+    });
+})();
 
 // Navigation footer (港股 Dashboard 加 link 去美股)
 document.addEventListener('DOMContentLoaded', () => {
     const footer = document.createElement('div');
     footer.style.cssText = 'text-align:center;padding:20px 0 8px;margin-top:20px;border-top:1px solid #2a2a4e;font-size:11px;color:#666;';
     footer.innerHTML = `
-        <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;">📊 美股 Dashboard</a>
+        <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;" data-i18n="nav_us">📊 美股 Dashboard</a>
         <span style="color:#444;">·</span>
-        <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;">🇭🇰 港股 Dashboard (current)</a>
+        <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;" data-i18n="nav_hk_current">🇭🇰 港股 Dashboard (current)</a>
     `;
     document.body.appendChild(footer);
 
     // Credit line
     const credit = document.createElement('div');
     credit.style.cssText = 'text-align:center;padding:6px 0 16px;font-size:10px;color:#555;letter-spacing:0.5px;';
+    credit.setAttribute('data-i18n', 'powered_by');
     credit.textContent = 'Powered by Eagle (Nigel AI)';
     document.body.appendChild(credit);
 });
