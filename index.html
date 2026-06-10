@@ -229,7 +229,7 @@ let activeGroup = null;  // Currently highlighted group (clicked row)
 
 async function loadData() {
     try {
-        const r = await fetch('data.json');
+        const r = await fetch('data.json?_t=' + Date.now());
         return await r.json();
     } catch(e) { return null; }
 }
