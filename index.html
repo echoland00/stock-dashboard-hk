@@ -229,9 +229,16 @@ let activeGroup = null;  // Currently highlighted group (clicked row)
 
 async function loadData() {
     try {
+        // Primary: GitHub Pages; Fallback: raw GitHub (bypasses CDN cache)
         const r = await fetch('data.json?_t=' + Date.now());
-        return await r.json();
-    } catch(e) { return null; }
+        if (r.ok) return await r.json();
+        throw new Error('Not OK');
+    } catch(e) {
+        try {
+            const r = await fetch('https://raw.githubusercontent.com/echoland00/stock-dashboard-hk/main/data.json?_t=' + Date.now());
+            return await r.json();
+        } catch(e2) { return null; }
+    }
 }
 
 function groupDailyReturns(dates, groupRets, days, view) {
