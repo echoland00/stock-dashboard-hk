@@ -78,6 +78,9 @@
   "2382.HK": "Hardware",
   "2388.HK": "International Banks",
   "2400.HK": "Gaming",
+  "0302.HK": "Gaming",
+  "1119.HK": "Gaming",
+  "6820.HK": "Gaming",
   "2602.HK": "Property Management",
   "2628.HK": "Insurance",
   "2688.HK": "Gas Utilities",
@@ -98,5 +101,6 @@
   "9922.HK": "Restaurants",
   "9988.HK": "Internet Platforms",
   "9991.HK": "E-commerce Retail",
-  "9999.HK": "Internet Platforms"
+  "9999.HK": "Internet Platforms",
+  "9990.HK": "Gaming"
 }
