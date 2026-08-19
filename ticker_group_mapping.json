@@ -44,6 +44,11 @@
   "1093.HK": "Pharmaceuticals",
   "1109.HK": "Mainland Property",
   "1128.HK": "Casino",
+  "0027.HK": "Casino",
+  "0200.HK": "Casino",
+  "0880.HK": "Casino",
+  "1928.HK": "Casino",
+  "2282.HK": "Casino",
   "1157.HK": "Machinery",
   "1171.HK": "Coal",
   "1177.HK": "Pharmaceuticals",
@@ -86,12 +91,12 @@
   "6178.HK": "Brokerage & Exchange",
   "6862.HK": "Restaurants",
   "9618.HK": "E-commerce Retail",
-  "9626.HK": "Gaming",
+  "9626.HK": "Internet Platforms",
   "9633.HK": "Food & Beverage",
   "9863.HK": "Electric Vehicles",
   "9868.HK": "Electric Vehicles",
   "9922.HK": "Restaurants",
   "9988.HK": "Internet Platforms",
   "9991.HK": "E-commerce Retail",
-  "9999.HK": "Gaming"
+  "9999.HK": "Internet Platforms"
 }
