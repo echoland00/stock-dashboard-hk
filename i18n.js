@@ -49,6 +49,9 @@
             // Footer
             'nav_us': '📊 美股 Dashboard',
             'nav_hk_current': '🇭🇰 港股 Dashboard (目前)',
+            'nav_feedback': '💬 意見/建議',
+            'feedback_section_title': '💬 意見 / 建議 / 優化建議',
+            'feedback_section_desc': '想見到啲咩？想優化邊度？留言話我哋知！（用 GitHub 賬號登入即可）',
             'powered_by': 'Powered by Eagle (Nigel AI)',
             // Misc
             'updated_prefix': '更新於',
@@ -92,6 +95,9 @@
             'indices_count': 'indices',
             'nav_us': '📊 US Stocks Dashboard',
             'nav_hk_current': '🇭🇰 HK Stock Dashboard (current)',
+            'nav_feedback': '💬 Feedback',
+            'feedback_section_title': '💬 Feedback / Suggestions / Ideas',
+            'feedback_section_desc': 'What would you like to see? How can we improve? Sign in with GitHub to leave a comment!',
             'powered_by': 'Powered by Eagle (Nigel AI)',
             'updated_prefix': 'Updated',
             'updated_sep': '·',

@@ -157,6 +157,8 @@
     <div style="margin-top:6px;font-size:11px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
         <a id="usLink" href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;" data-i18n="subtitle_index">📊 美股 Dashboard →</a>
         <span style="color:#444;">·</span>
+        <a href="#feedback" style="color:#6c5ce7;text-decoration:none;" data-i18n="nav_feedback">💬 意見/建議</a>
+        <span style="color:#444;">·</span>
         <select id="langSelect" style="background:#1a1a3e;color:#ddd;border:1px solid #444;padding:2px 8px;border-radius:6px;font-size:11px;cursor:pointer;">
             <option value="zh">中文</option>
             <option value="en">English</option>
@@ -632,6 +634,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="https://echoland00.github.io/stock-dashboard/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;" data-i18n="nav_us">📊 美股 Dashboard</a>
         <span style="color:#444;">·</span>
         <a href="https://echoland00.github.io/stock-dashboard-hk/" style="color:#fff;text-decoration:none;margin:0 12px;" data-i18n="nav_hk_current">🇭🇰 港股 Dashboard (目前)</a>
+        <span style="color:#444;">·</span>
+        <a href="#feedback" style="color:#6c5ce7;text-decoration:none;margin:0 12px;" data-i18n="nav_feedback">💬 意見/建議</a>
     `;
     document.body.appendChild(footer);
 
@@ -643,6 +647,33 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(credit);
 
     // Re-apply i18n to freshly added footer elements
+    EagleI18n.apply();
+});
+
+// Feedback section (Giscus) — GitHub Discussions comments
+document.addEventListener('DOMContentLoaded', () => {
+    const section = document.createElement('section');
+    section.id = 'feedback';
+    section.style.cssText = 'max-width:1100px;margin:40px auto 24px;padding:24px 20px;background:#13132e;border:1px solid #2a2a4e;border-radius:12px;';
+    section.innerHTML = `
+        <h2 style="margin:0 0 6px;font-size:18px;color:#fff;" data-i18n="feedback_section_title">💬 意見 / 建議 / 優化建議</h2>
+        <p style="margin:0 0 16px;font-size:13px;color:#aaa;" data-i18n="feedback_section_desc">想見到啲咩？想優化邊度？留言話我哋知！（用 GitHub 賬號登入即可）</p>
+        <script src="https://giscus.app/client.js"
+                data-repo="echoland00/stock-dashboard-hk"
+                data-repo-id="R_kg_DOHx_placeholder"
+                data-category="General"
+                data-category-id="DIC_kw_DOHx_placeholder"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="top"
+                data-theme="dark"
+                data-lang="zh-Hant"
+                crossorigin="anonymous"
+                async></script>
+    `;
+    document.body.appendChild(section);
     EagleI18n.apply();
 });
 
