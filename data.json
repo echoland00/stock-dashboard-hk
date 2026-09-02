@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-01 00:08:59",
+  "generated_at": "2026-09-02 08:47:25",
   "dates": [
     "2026-03-02",
     "2026-03-03",
@@ -124,7 +124,8 @@
     "2026-08-26",
     "2026-08-27",
     "2026-08-28",
-    "2026-08-31"
+    "2026-08-31",
+    "2026-09-01"
   ],
   "groups": {
     "Hong Kong Property": [
@@ -251,7 +252,8 @@
       0.11,
       -0.93,
       -0.3,
-      0.0
+      -3.65,
+      -1.36
     ],
     "Conglomerates": [
       0,
@@ -377,7 +379,8 @@
       0.98,
       -1.36,
       -1.51,
-      0.0
+      -3.78,
+      -1.97
     ],
     "International Banks": [
       0,
@@ -503,7 +506,8 @@
       -0.86,
       -0.15,
       1.01,
-      0.0
+      1.59,
+      -0.55
     ],
     "Power Utilities": [
       0,
@@ -629,7 +633,8 @@
       0.54,
       0.73,
       0.17,
-      0.0
+      -1.19,
+      -0.41
     ],
     "REITs & Rentals": [
       0,
@@ -755,7 +760,8 @@
       -0.06,
       -0.58,
       -0.32,
-      0.0
+      -3.12,
+      -1.25
     ],
     "Shipping & Ports": [
       0,
@@ -881,7 +887,8 @@
       -0.05,
       0.4,
       0.18,
-      0.0
+      -0.39,
+      0.52
     ],
     "Water & Environment": [
       0,
@@ -1007,7 +1014,8 @@
       -9.79,
       1.06,
       -0.01,
-      0.0
+      1.86,
+      0.97
     ],
     "Airlines": [
       0,
@@ -1133,7 +1141,8 @@
       1.8,
       -1.03,
       0.17,
-      0.0
+      -4.41,
+      -1.27
     ],
     "Food & Beverage": [
       0,
@@ -1259,7 +1268,8 @@
       0.41,
       -1.37,
       -0.2,
-      0.0
+      -0.97,
+      -2.23
     ],
     "Metals & Mining": [
       0,
@@ -1385,7 +1395,8 @@
       2.39,
       -1.56,
       1.99,
-      0.0
+      -4.14,
+      -1.85
     ],
     "Gas Utilities": [
       0,
@@ -1511,7 +1522,8 @@
       -0.96,
       0.36,
       1.46,
-      0.0
+      1.75,
+      -1.84
     ],
     "Oil & Gas": [
       0,
@@ -1637,7 +1649,8 @@
       -0.66,
       0.22,
       1.77,
-      0.0
+      -0.11,
+      -0.36
     ],
     "Brokerage & Exchange": [
       0,
@@ -1763,7 +1776,8 @@
       1.57,
       1.58,
       0.25,
-      0.0
+      0.01,
+      -1.55
     ],
     "Semiconductors": [
       0,
@@ -1889,7 +1903,8 @@
       3.13,
       2.84,
       -2.1,
-      0.0
+      1.59,
+      -2.34
     ],
     "Machinery": [
       0,
@@ -2015,7 +2030,8 @@
       -2.18,
       4.33,
       -5.52,
-      0.0
+      -2.4,
+      0.41
     ],
     "Mainland Property": [
       0,
@@ -2141,7 +2157,8 @@
       2.24,
       -1.94,
       -1.37,
-      0.0
+      -6.92,
+      -1.33
     ],
     "Internet Platforms": [
       0,
@@ -2267,7 +2284,8 @@
       0.24,
       -0.07,
       0.13,
-      0.0
+      0.0,
+      -1.72
     ],
     "Telecom Carriers": [
       0,
@@ -2393,7 +2411,8 @@
       -0.59,
       -0.69,
       -0.36,
-      0.0
+      -0.09,
+      0.48
     ],
     "Medical Devices": [
       0,
@@ -2519,7 +2538,8 @@
       -1.58,
       -0.92,
       -0.33,
-      0.0
+      -2.39,
+      0.62
     ],
     "Mainland Banks": [
       0,
@@ -2645,7 +2665,8 @@
       0.5,
       -0.99,
       0.43,
-      0.0
+      3.78,
+      1.28
     ],
     "Hardware": [
       0,
@@ -2771,7 +2792,8 @@
       1.4,
       -0.17,
       0.68,
-      0.0
+      2.32,
+      0.9
     ],
     "Pharmaceuticals": [
       0,
@@ -2897,7 +2919,8 @@
       2.57,
       -0.65,
       -0.51,
-      0.0
+      -3.16,
+      -0.79
     ],
     "Casino": [
       0,
@@ -3023,7 +3046,8 @@
       -1.0,
       -1.11,
       -1.07,
-      0.0
+      0.15,
+      -1.97
     ],
     "Coal": [
       0,
@@ -3149,7 +3173,8 @@
       -0.44,
       3.51,
       0.84,
-      0.0
+      1.54,
+      -2.04
     ],
     "Electric Vehicles": [
       0,
@@ -3275,7 +3300,8 @@
       1.77,
       -1.43,
       -0.59,
-      0.0
+      -2.71,
+      -0.5
     ],
     "Insurance": [
       0,
@@ -3401,7 +3427,8 @@
       1.95,
       0.08,
       0.32,
-      0.0
+      1.12,
+      -0.15
     ],
     "Healthcare Services": [
       0,
@@ -3527,7 +3554,8 @@
       -1.27,
       -0.69,
       -0.38,
-      0.0
+      -2.76,
+      0.55
     ],
     "Consumer Durables HK": [
       0,
@@ -3653,7 +3681,8 @@
       -0.09,
       -0.54,
       0.71,
-      0.0
+      -2.14,
+      -0.65
     ],
     "Software SaaS": [
       0,
@@ -3779,7 +3808,8 @@
       0.63,
       0.13,
       1.98,
-      0.0
+      -1.02,
+      1.19
     ],
     "Apparel & Sportswear": [
       0,
@@ -3905,7 +3935,8 @@
       -2.74,
       -0.91,
       -0.49,
-      0.0
+      -2.44,
+      0.99
     ],
     "Gaming": [
       0,
@@ -4031,7 +4062,8 @@
       0.99,
       0.23,
       -0.96,
-      0.0
+      0.67,
+      -0.55
     ],
     "Property Management": [
       0,
@@ -4157,7 +4189,8 @@
       0.46,
       1.55,
       -0.28,
-      0.0
+      -2.09,
+      1.41
     ],
     "Restaurants": [
       0,
@@ -4283,7 +4316,8 @@
       4.32,
       -0.44,
       -1.18,
-      0.0
+      -1.73,
+      -1.15
     ],
     "E-commerce Retail": [
       0,
@@ -4409,44 +4443,45 @@
       0.98,
       -0.51,
       -0.12,
-      0.0
+      0.7,
+      -2.87
     ]
   },
   "sectors": {
-    "Water & Environment": "Utilities",
-    "Gas Utilities": "Energy",
-    "Internet Platforms": "Information Technology",
-    "Insurance": "Financials",
-    "Casino": "Consumer Discretionary",
-    "Oil & Gas": "Energy",
-    "Semiconductors": "Information Technology",
-    "Mainland Property": "Real Estate",
-    "Apparel & Sportswear": "Consumer Discretionary",
-    "Telecom Carriers": "Communication Services",
-    "Gaming": "Information Technology",
-    "Restaurants": "Consumer Discretionary",
-    "Coal": "Energy",
-    "Medical Devices": "Health Care",
-    "Pharmaceuticals": "Health Care",
-    "Food & Beverage": "Consumer Staples",
-    "Consumer Durables HK": "Consumer Discretionary",
-    "Shipping & Ports": "Industrials",
-    "Brokerage & Exchange": "Financials",
-    "Mainland Banks": "Financials",
-    "REITs & Rentals": "Real Estate",
-    "E-commerce Retail": "Consumer Discretionary",
-    "Metals & Mining": "Materials",
-    "Software SaaS": "Information Technology",
-    "Power Utilities": "Utilities",
-    "International Banks": "Financials",
-    "Healthcare Services": "Health Care",
-    "Property Management": "Real Estate",
-    "Hardware": "Information Technology",
-    "Conglomerates": "Conglomerates",
     "Electric Vehicles": "Consumer Discretionary",
-    "Hong Kong Property": "Real Estate",
+    "Property Management": "Real Estate",
+    "Apparel & Sportswear": "Consumer Discretionary",
+    "Power Utilities": "Utilities",
+    "Water & Environment": "Utilities",
+    "Telecom Carriers": "Communication Services",
+    "Internet Platforms": "Information Technology",
+    "Coal": "Energy",
+    "Mainland Banks": "Financials",
+    "Insurance": "Financials",
+    "Medical Devices": "Health Care",
+    "Metals & Mining": "Materials",
+    "Semiconductors": "Information Technology",
+    "Food & Beverage": "Consumer Staples",
+    "Casino": "Consumer Discretionary",
+    "Gaming": "Information Technology",
+    "E-commerce Retail": "Consumer Discretionary",
     "Airlines": "Industrials",
-    "Machinery": "Industrials"
+    "Machinery": "Industrials",
+    "Oil & Gas": "Energy",
+    "Gas Utilities": "Energy",
+    "Shipping & Ports": "Industrials",
+    "Healthcare Services": "Health Care",
+    "Restaurants": "Consumer Discretionary",
+    "Hardware": "Information Technology",
+    "International Banks": "Financials",
+    "Consumer Durables HK": "Consumer Discretionary",
+    "Conglomerates": "Conglomerates",
+    "Hong Kong Property": "Real Estate",
+    "Brokerage & Exchange": "Financials",
+    "Software SaaS": "Information Technology",
+    "Mainland Property": "Real Estate",
+    "Pharmaceuticals": "Health Care",
+    "REITs & Rentals": "Real Estate"
   },
   "stocks": {
     "Hong Kong Property": [
@@ -4855,6 +4890,7 @@
         0.56,
         -0.34,
         0.0,
+        0.0,
         0.0
       ]
     },
@@ -4984,6 +5020,7 @@
         1.05,
         -0.51,
         0.0,
+        0.27,
         0.0
       ]
     },
@@ -5113,6 +5150,7 @@
         0.92,
         -0.04,
         -0.43,
+        0.3,
         0.0
       ]
     }
