@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08 20:34:45",
+  "generated_at": "2026-09-09 08:46:45",
   "dates": [
     "2026-03-09",
     "2026-03-10",
@@ -4448,40 +4448,40 @@
     ]
   },
   "sectors": {
-    "Electric Vehicles": "Consumer Discretionary",
-    "Food & Beverage": "Consumer Staples",
-    "Healthcare Services": "Health Care",
-    "Oil & Gas": "Energy",
-    "REITs & Rentals": "Real Estate",
+    "Mainland Banks": "Financials",
+    "Machinery": "Industrials",
+    "Gaming": "Information Technology",
+    "Semiconductors": "Information Technology",
     "Airlines": "Industrials",
-    "Consumer Durables HK": "Consumer Discretionary",
-    "Medical Devices": "Health Care",
-    "Telecom Carriers": "Communication Services",
+    "Hong Kong Property": "Real Estate",
+    "Conglomerates": "Conglomerates",
+    "Pharmaceuticals": "Health Care",
+    "Restaurants": "Consumer Discretionary",
     "Water & Environment": "Utilities",
+    "Apparel & Sportswear": "Consumer Discretionary",
+    "Food & Beverage": "Consumer Staples",
+    "E-commerce Retail": "Consumer Discretionary",
+    "Property Management": "Real Estate",
+    "Mainland Property": "Real Estate",
+    "Oil & Gas": "Energy",
+    "Gas Utilities": "Energy",
+    "Electric Vehicles": "Consumer Discretionary",
+    "Shipping & Ports": "Industrials",
+    "Casino": "Consumer Discretionary",
+    "International Banks": "Financials",
+    "Coal": "Energy",
+    "Hardware": "Information Technology",
     "Metals & Mining": "Materials",
     "Brokerage & Exchange": "Financials",
-    "Coal": "Energy",
-    "Internet Platforms": "Information Technology",
-    "Semiconductors": "Information Technology",
-    "Insurance": "Financials",
-    "Machinery": "Industrials",
-    "Mainland Property": "Real Estate",
-    "Mainland Banks": "Financials",
-    "International Banks": "Financials",
-    "Apparel & Sportswear": "Consumer Discretionary",
-    "Hardware": "Information Technology",
-    "Restaurants": "Consumer Discretionary",
-    "Pharmaceuticals": "Health Care",
+    "Consumer Durables HK": "Consumer Discretionary",
+    "REITs & Rentals": "Real Estate",
     "Software SaaS": "Information Technology",
-    "Conglomerates": "Conglomerates",
+    "Internet Platforms": "Information Technology",
+    "Insurance": "Financials",
+    "Medical Devices": "Health Care",
+    "Telecom Carriers": "Communication Services",
     "Power Utilities": "Utilities",
-    "Gas Utilities": "Energy",
-    "Shipping & Ports": "Industrials",
-    "Property Management": "Real Estate",
-    "E-commerce Retail": "Consumer Discretionary",
-    "Hong Kong Property": "Real Estate",
-    "Gaming": "Information Technology",
-    "Casino": "Consumer Discretionary"
+    "Healthcare Services": "Health Care"
   },
   "stocks": {
     "Hong Kong Property": [
@@ -4891,7 +4891,7 @@
         -0.39,
         1.74,
         -0.93,
-        -0.38
+        0.0
       ]
     },
     "^HSCE": {
@@ -5021,7 +5021,7 @@
         -0.77,
         2.02,
         -1.46,
-        -0.38
+        0.0
       ]
     },
     "3032.HK": {
@@ -5150,8 +5150,8 @@
         -0.79,
         -1.06,
         2.1,
-        0.0,
-        -2.19
+        -0.66,
+        0.0
       ]
     }
   },
